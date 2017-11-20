@@ -6,6 +6,8 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Enumeration;
+import java.util.Properties;
 
 public class Main {
 
@@ -13,44 +15,20 @@ public class Main {
         System.out.print("AndroidStudio 日本語化ツール\n\n");
         System.out.print("作成者:かおる\n");
         System.out.print("Google+ : https://plus.google.com/+%E3%81%8B%E3%81%8A%E3%82%8B%E3%82%93\n\n");
-        ReadFile("/home/kaoru/Documents/翻訳/test/JavaErrorMessages.properties");
+        ReadProperties();
 
     }
 
-    public static void ReadFile(String filePath) {
-        FileReader fr = null;
-        BufferedReader br = null;
+    public static void ReadProperties(){
+        Properties pro = new Properties();
         try {
-            fr = new FileReader(filePath);
-            br = new BufferedReader(fr);
-
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.equals("")) {
-                    System.out.print("改行\n");
-                } else {
-                    if (line.startsWith("#")) {
-                        System.out.print("コメント : " + line + "\n");
-                    } else {
-                        if (line.contains("=") && line.contains(".")) {
-                            String key = line.split("=")[0];
-                            String value = line.replace(key + "=", "");
-                            System.out.print(key + "=" + callPost(value)+ "\n");
-                        } else {
-                            System.out.print("前に続いてる : " + line + "\n");
-                        }
-                    }
-                }
+            pro.load(new FileInputStream("/home/kaoru/Documents/翻訳/test/JavaErrorMessages.properties"));
+            for(Enumeration<Object> enumeration = pro.keys(); enumeration.hasMoreElements();){
+                String name = (String) enumeration.nextElement();
+                System.out.println(name + "=" + callPost(pro.getProperty(name)));
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                br.close();
-                fr.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 
